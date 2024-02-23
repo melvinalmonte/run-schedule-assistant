@@ -16,7 +16,7 @@ The Rutgers Schedule Assistant API is a FastAPI application designed to interact
     cd run-schedule-assistant
     ```
 
-2. **Install Dependencies**: This assumens you have your virtual environment setup
+2. **Install Dependencies**: This assumes you have your virtual environment setup
 
    Install dependencies
 
