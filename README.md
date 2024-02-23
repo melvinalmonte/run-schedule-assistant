@@ -29,3 +29,8 @@ The Rutgers Schedule Assistant API is a FastAPI application designed to interact
     ```sh
     python ./src/run_schedule_assistant/main.py
     ```
+
+TODO:
+* Enhance logging
+* Enhance error handling
+* Integrate alerts
