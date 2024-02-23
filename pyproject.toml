@@ -1,0 +1,22 @@
+[project]
+name = "run-schedule-assistant"
+version = "0.1.0"
+description = "Default template for PDM package"
+authors = [
+    {name = "Melvin Almonte", email = "melvinalmonte@gmail.com"},
+]
+dependencies = [
+    "fastapi>=0.109.2",
+    "uvicorn[standard]>=0.27.1",
+    "pydantic>=2.6.1",
+    "pydantic-settings>=2.2.1",
+    "requests>=2.31.0",
+    "black>=24.2.0",
+]
+requires-python = "==3.12.*"
+readme = "README.md"
+license = {text = "MIT"}
+
+
+[tool.pdm]
+distribution = false
