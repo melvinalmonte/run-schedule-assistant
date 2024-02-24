@@ -44,7 +44,7 @@ class RutgersScheduleOfClasses:
                         "instructor": section["instructorsText"],
                         "status": "Open" if section["openStatus"] else "Closed",
                         "meetings": [
-                            f"{DAY_NAMES.get(mt['meetingDay'], 'Unknown Day')}: {mt['startTime']} - {mt['endTime']}, {mt['campusName']}"
+                            f"{DAY_NAMES.get(mt['meetingDay'], 'Unknown Day')}: {mt['startTime']} - {mt['endTime']}, {mt['campusName']}"  # noqa
                             for mt in section["meetingTimes"]
                         ],
                     }
@@ -52,8 +52,7 @@ class RutgersScheduleOfClasses:
                 ],
             }
             for x in data
-            if x["subject"] in str(subject_to_filter)
-            and x["expandedTitle"].strip() != ""
+            if x["subject"] in str(subject_to_filter) and x["expandedTitle"].strip() != ""
         ]
 
         return course_info
