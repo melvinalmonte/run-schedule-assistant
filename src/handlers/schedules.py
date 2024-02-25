@@ -1,52 +1,12 @@
-from enum import Enum
-
 from fastapi import APIRouter, status
 
+from src.models.schedule import Schedule, Semesters, Campuses
 from src.settings import settings
 from src.utils.rutgers import RutgersScheduleOfClasses
-from pydantic import BaseModel
-from typing import List
 
 router = APIRouter()
 
 app_settings = settings.get_settings()
-
-
-class Meeting(BaseModel):
-    day: str
-    time: str
-    location: str
-
-
-class Section(BaseModel):
-    section: str
-    instructor: str
-    status: str
-    meetings: List[str]
-
-
-class CourseInfo(BaseModel):
-    title: str
-    courseCode: str
-    credits: str
-    sections: List[Section]
-
-
-class Schedule(BaseModel):
-    response: List[CourseInfo]
-
-
-class Semesters(str, Enum):
-    spring = "Spring"
-    summer = "Summer"
-    fall = "Fall"
-    winter = "Winter"
-
-
-class Campuses(str, Enum):
-    newark = "Newark"
-    new_brunswick = "New Brunswick"
-    camden = "Camden"
 
 
 @router.get(
