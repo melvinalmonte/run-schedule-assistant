@@ -43,7 +43,7 @@ class RutgersScheduleOfClasses(S3Access):
                 ],
             }
             for x in data
-            if x["subject"] in str(subject_to_filter) and x["expandedTitle"].strip() != ""
+            if int(x["subject"]) in subject_to_filter and x["expandedTitle"].strip() != ""
         ]
 
         return course_info

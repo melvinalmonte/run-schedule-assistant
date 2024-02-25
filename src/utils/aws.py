@@ -56,9 +56,6 @@ class S3Access:
         Returns:
             bytes: The content of the retrieved object, or None if the operation fails.
         """
-        if not self.session:
-            print("Session is not initialized. Cannot retrieve object.")
-            return None
         try:
             s3 = self.session.client("s3")
             response = s3.get_object(Bucket=self.bucket_name, Key=object_key)

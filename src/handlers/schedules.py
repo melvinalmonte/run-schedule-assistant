@@ -15,7 +15,7 @@ app_settings = settings.get_settings()
     tags=["Schedule Generator"],
     response_model=Schedule,
 )
-async def get_schedules(year: str, term: Semesters, campus: Campuses):
+async def retrieve_schedules(year: str, term: Semesters, campus: Campuses):
     """Retrieves schedule of classes from Rutgers University's Schedule of Classes API"""
     schedule = RutgersScheduleOfClasses(
         year=year, term=term, campus=campus, role_arn=app_settings.READER_ROLE, bucket_name=app_settings.BUCKET_NAME
@@ -27,5 +27,5 @@ async def get_schedules(year: str, term: Semesters, campus: Campuses):
 
 
 @router.get(path="/health", status_code=status.HTTP_200_OK)
-async def health_check():
+async def health_check_status():
     return {"status": "ok"}
