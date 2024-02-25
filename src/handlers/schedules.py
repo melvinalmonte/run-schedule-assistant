@@ -2,11 +2,14 @@ from enum import Enum
 
 from fastapi import APIRouter, status
 
+from src.settings import settings
 from src.utils.rutgers import RutgersScheduleOfClasses
 from pydantic import BaseModel
 from typing import List
 
 router = APIRouter()
+
+app_settings = settings.get_settings()
 
 
 class Meeting(BaseModel):
@@ -54,7 +57,9 @@ class Campuses(str, Enum):
 )
 async def get_schedules(year: str, term: Semesters, campus: Campuses):
     """Retrieves schedule of classes from Rutgers University's Schedule of Classes API"""
-    schedule = RutgersScheduleOfClasses(year=year, term=term, campus=campus)
+    schedule = RutgersScheduleOfClasses(
+        year=year, term=term, campus=campus, role_arn=app_settings.READER_ROLE, bucket_name=app_settings.BUCKET_NAME
+    )
 
     classes = schedule.fetch_filtered_schedule_of_classes()
 
