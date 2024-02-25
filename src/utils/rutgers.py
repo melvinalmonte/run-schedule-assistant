@@ -1,5 +1,4 @@
 import json
-from functools import lru_cache
 from typing import List
 
 from src.utils.aws import S3Access
@@ -67,7 +66,6 @@ class RutgersScheduleOfClasses(S3Access):
             print(f"An error occurred while fetching the schedule of classes: {e}")
             raise e
 
-    @lru_cache(maxsize=1000)
     def fetch_filtered_schedule_of_classes(self) -> List[dict]:
         """
         Fetches the schedule of classes from the Rutgers API and filters the results.
