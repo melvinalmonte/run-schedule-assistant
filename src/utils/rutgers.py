@@ -15,6 +15,14 @@ DAY_NAMES = {
     "S": "Saturday",
 }
 
+SUBJECTS = {
+    640: "Mathematics",
+    198: "Computer Science",
+    623: "Management Science and Information Systems",
+    547: "Information Technology and Informatics",
+    548: "Information Systems",
+}
+
 
 class RutgersScheduleOfClasses:
     def __init__(self, year: str, term: str, campus: str):
@@ -32,10 +40,11 @@ class RutgersScheduleOfClasses:
     @staticmethod
     def _classes_parser(data: List[dict]) -> List[dict]:
         """Parses the classes from the response data."""
-        subject_to_filter = [640, 198, 548]
+        subject_to_filter = list(SUBJECTS.keys())
         course_info = [
             {
                 "title": x["expandedTitle"].strip(),
+                "department": SUBJECTS.get(int(x["subject"]), "Unknown Department"),
                 "courseCode": x["courseString"],
                 "credits": x["creditsObject"]["description"],
                 "sections": [
@@ -52,7 +61,7 @@ class RutgersScheduleOfClasses:
                 ],
             }
             for x in data
-            if x["subject"] in str(subject_to_filter) and x["expandedTitle"].strip() != ""
+            if int(x["subject"]) in subject_to_filter and x["expandedTitle"].strip() != ""
         ]
 
         return course_info
