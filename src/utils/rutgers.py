@@ -12,6 +12,14 @@ DAY_NAMES = {
     "S": "Saturday",
 }
 
+SUBJECTS = {
+    640: "Mathematics",
+    198: "Computer Science",
+    623: "Management Science and Information Systems",
+    547: "Information Technology and Informatics",
+    548: "Information Systems"
+}
+
 
 class RutgersScheduleOfClasses(S3Access):
     def __init__(self, year: str, term: str, campus: str, role_arn: str, bucket_name: str):
@@ -23,10 +31,11 @@ class RutgersScheduleOfClasses(S3Access):
     @staticmethod
     def _classes_parser(data: List[dict]) -> List[dict]:
         """Parses the classes from the response data."""
-        subject_to_filter = [640, 198, 548]
+        subject_to_filter = list(SUBJECTS.keys())
         course_info = [
             {
                 "title": x["expandedTitle"].strip(),
+                "department": SUBJECTS.get(int(x["subject"]), "Unknown Department"),
                 "courseCode": x["courseString"],
                 "credits": x["creditsObject"]["description"],
                 "sections": [
