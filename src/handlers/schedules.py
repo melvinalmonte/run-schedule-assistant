@@ -1,3 +1,5 @@
+from enum import Enum
+
 from fastapi import APIRouter, status
 
 from src.models.schedule import Schedule, Semesters, Campuses
@@ -17,9 +19,7 @@ app_settings = settings.get_settings()
 )
 async def retrieve_schedules(year: str, term: Semesters, campus: Campuses):
     """Retrieves schedule of classes from Rutgers University's Schedule of Classes API"""
-    schedule = RutgersScheduleOfClasses(
-        year=year, term=term, campus=campus, role_arn=app_settings.READER_ROLE, bucket_name=app_settings.BUCKET_NAME
-    )
+    schedule = RutgersScheduleOfClasses(year=year, term=term, campus=campus)
 
     classes = schedule.fetch_filtered_schedule_of_classes()
 

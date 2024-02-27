@@ -1,7 +1,10 @@
-import json
 from typing import List
 
-from src.utils.aws import S3Access
+import requests
+
+SEMESTERS = {"spring": 1, "summer": 7, "fall": 9, "winter": 0}
+
+CAMPUS_CODES = {"newark": "NK", "new brunswick": "NB", "camden": "CM"}
 
 DAY_NAMES = {
     "M": "Monday",
@@ -12,30 +15,27 @@ DAY_NAMES = {
     "S": "Saturday",
 }
 
-SUBJECTS = {
-    640: "Mathematics",
-    198: "Computer Science",
-    623: "Management Science and Information Systems",
-    547: "Information Technology and Informatics",
-    548: "Information Systems",
-}
 
-
-class RutgersScheduleOfClasses(S3Access):
-    def __init__(self, year: str, term: str, campus: str, role_arn: str, bucket_name: str):
-        super().__init__(role_arn, bucket_name)
+class RutgersScheduleOfClasses:
+    def __init__(self, year: str, term: str, campus: str):
         self.year = year
-        self.term = term.lower()
-        self.campus = campus.lower()
+        self.term = term
+        self.campus = campus
+
+    def _construct_url(self) -> str:
+        """Constructs the URL for the HTTP request based on the term, year, and campus."""
+        term = SEMESTERS[self.term.lower()]
+        year = self.year
+        campus = CAMPUS_CODES[self.campus.lower()]
+        return f"https://classes.rutgers.edu/soc/api/courses.json?year={year}&term={term}&campus={campus}"
 
     @staticmethod
     def _classes_parser(data: List[dict]) -> List[dict]:
         """Parses the classes from the response data."""
-        subject_to_filter = list(SUBJECTS.keys())
+        subject_to_filter = [640, 198, 548]
         course_info = [
             {
                 "title": x["expandedTitle"].strip(),
-                "department": SUBJECTS.get(int(x["subject"]), "Unknown Department"),
                 "courseCode": x["courseString"],
                 "credits": x["creditsObject"]["description"],
                 "sections": [
@@ -52,26 +52,23 @@ class RutgersScheduleOfClasses(S3Access):
                 ],
             }
             for x in data
-            if int(x["subject"]) in subject_to_filter and x["expandedTitle"].strip() != ""
+            if x["subject"] in str(subject_to_filter) and x["expandedTitle"].strip() != ""
         ]
 
         return course_info
 
     def fetch_schedule_of_classes(self) -> List[dict]:
         """
-        Fetches the schedule of classes from our s3 bucket.
+        Fetches the schedule of classes from the Rutgers API.
 
         Returns:
             A list of dictionaries representing the schedule of classes, or None if an error occurred.
         """
         try:
-
-            key = f"{self.year}/{self.term}/{self.campus}.json"
-
-            response = self.get_object(key)
-
-            return json.loads(response)
-        except Exception as e:
+            response = requests.get(self._construct_url())
+            response.raise_for_status()
+            return response.json()
+        except requests.exceptions.RequestException as e:
             print(f"An error occurred while fetching the schedule of classes: {e}")
             raise e
 
@@ -83,11 +80,9 @@ class RutgersScheduleOfClasses(S3Access):
             A list of dictionaries representing the filtered schedule of classes, or None if an error occurred.
         """
         try:
-            key = f"{self.year}/{self.term}/{self.campus}.json"
-
-            response = self.get_object(key)
-
-            return self._classes_parser(json.loads(response))
-        except Exception as e:
+            response = requests.get(self._construct_url())
+            response.raise_for_status()
+            return self._classes_parser(response.json())
+        except requests.exceptions.RequestException as e:
             print(f"An error occurred while fetching the schedule of classes: {e}")
             raise e
