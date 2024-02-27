@@ -18,6 +18,7 @@ class Section(BaseModel):
 
 class CourseInfo(BaseModel):
     title: str
+    department: str
     courseCode: str
     credits: str
     sections: List[Section]
