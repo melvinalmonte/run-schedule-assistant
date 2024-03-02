@@ -62,4 +62,4 @@ class S3Access:
             return response["Body"].read()
         except (ClientError, BotoCoreError) as e:
             print(f"Failed to get object '{object_key}' from bucket '{self.bucket_name}': {e}")
-            raise e
+            return None

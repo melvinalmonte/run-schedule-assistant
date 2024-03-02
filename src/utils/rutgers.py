@@ -86,6 +86,9 @@ class RutgersScheduleOfClasses(S3Access):
             key = f"{self.year}/{self.term}/{self.campus}.json"
 
             response = self.get_object(key)
+            if not response:
+                print(f"An error occurred while fetching the schedule of classes: {response}")
+                return []
 
             return self._classes_parser(json.loads(response))
         except Exception as e:
