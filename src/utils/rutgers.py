@@ -13,11 +13,11 @@ DAY_NAMES = {
 }
 
 SUBJECTS = {
-    640: "Mathematics",
     198: "Computer Science",
-    623: "Management Science and Information Systems",
     547: "Information Technology and Informatics",
     548: "Information Systems",
+    623: "Management Science and Information Systems",
+    640: "Mathematics",
 }
 
 
