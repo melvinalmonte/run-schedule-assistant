@@ -22,6 +22,11 @@ class Settings(BaseSettings):
     READER_ROLE: str
     BUCKET_NAME: str
 
+    # Redis Configuration
+    REDISHOST: str = "localhost"
+    REDISPASSWORD: str = "admin"
+    REDISPORT: int = 6379
+
 
 @lru_cache()
 def get_settings():
