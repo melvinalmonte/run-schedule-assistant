@@ -2,6 +2,7 @@ import json
 from typing import List
 
 from src.utils.aws import S3Access
+from src.utils.cache import RedisAccess
 
 DAY_NAMES = {
     "M": "Monday",
@@ -83,14 +84,23 @@ class RutgersScheduleOfClasses(S3Access):
             A list of dictionaries representing the filtered schedule of classes, or None if an error occurred.
         """
         try:
+            cache_key = f"{self.year}:{self.term}:{self.campus}"
+
+            cache = RedisAccess()
+
+            cached_response = cache.get_value(cache_key)
+            if cached_response:
+                return json.loads(cached_response)
+
             key = f"{self.year}/{self.term}/{self.campus}.json"
 
             response = self.get_object(key)
             if not response:
                 print(f"An error occurred while fetching the schedule of classes: {response}")
                 return []
-
-            return self._classes_parser(json.loads(response))
+            filtered_data = self._classes_parser(json.loads(response))
+            cache.set_value(cache_key, json.dumps(filtered_data))
+            return filtered_data
         except Exception as e:
             print(f"An error occurred while fetching the schedule of classes: {e}")
             raise e
